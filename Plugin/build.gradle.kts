@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.api.attributes.java.TargetJvmVersion
 
 plugins {
     id("java")
@@ -10,6 +11,8 @@ plugins {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
+    // Keep Shadow 8.x compatible while still compiling against Paper 26.1.x API.
+    options.release.set(21)
 }
 
 repositories {
@@ -61,7 +64,7 @@ tasks.withType<ShadowJar> {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
@@ -137,8 +140,12 @@ dependencies {
     libby("org.bstats:bstats-bukkit:3.1.0")
 
     //Paper
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    implementation("com.github.retrooper:packetevents-spigot:2.11.0")
+    compileOnly("io.papermc.paper:paper-api:26.1.2.build.20-alpha") {
+        attributes {
+            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
+        }
+    }
+    implementation("com.github.retrooper:packetevents-spigot:2.12.1")
     compileOnly("org.apache.logging.log4j:log4j-core:2.25.1")
 
     //Libby

@@ -24,8 +24,8 @@ LibreLogin did not meet our expectations, which is why this fork was created.</p
 
 # Quick information 📌
 
-<img src="https://img.shields.io/badge/Java%20version-%2017+-blue?style=for-the-badge&logo=java&logoColor=white"
-alt="Plugin requires Java 17 or newer"></img>
+<img src="https://img.shields.io/badge/Java%20version-%2025+-blue?style=for-the-badge&logo=java&logoColor=white"
+alt="Plugin requires Java 25 or newer"></img>
 <a href="https://discord.gg/WTtEQneRJb">
 <img src="https://img.shields.io/badge/Discord-%20SUPPORT-purple?style=for-the-badge&logo=discord&logoColor=white" 
 alt="Support available on Discord"></img>
@@ -50,8 +50,8 @@ alt="Contributors listed"></img>
 - Geyser (Bedrock) support using [Floodgate](https://github.com/Navio1430/LibreLoginProd/wiki/Floodgate)
 
 ## Platforms ⚙️
-- [✔️] Velocity - up to 1.21.11
-- [✔️] Paper - up to 1.21.11
+- [✔️] Velocity - up to 26.1.x
+- [✔️] Paper - up to 26.1.x
 - [❌] BungeeCord - no longer supported, do not use it for production
 
 ## Main changes 

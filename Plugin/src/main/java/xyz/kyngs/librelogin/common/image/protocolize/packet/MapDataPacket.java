@@ -38,7 +38,8 @@ public class MapDataPacket extends AbstractPacket {
                     rangedIdMapping(761, 761, 0x25), // 1.19.3
                     rangedIdMapping(762, 763, 0x29), // 1.19.4 - 1.20.(1)
                     rangedIdMapping(764, 765, 0x2a), // 1.20.2 - 1.20.4
-                    rangedIdMapping(766, 767, 0x2c) // 1.20.5 - 1.21.1
+                    rangedIdMapping(
+                            766, 10000, 0x2c) // 1.20.5+ (best-effort fallback, incl. 26.1.x)
                     );
 
     private int mapID;

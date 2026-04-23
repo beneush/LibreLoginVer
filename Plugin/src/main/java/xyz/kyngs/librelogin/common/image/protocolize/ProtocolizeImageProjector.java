@@ -88,7 +88,6 @@ public class ProtocolizeImageProjector<P, S> extends AuthenticImageProjector<P, 
 
         var protocolize = Protocolize.playerProvider().player(id);
 
-        return protocolize.protocolVersion() >= ProtocolVersions.MINECRAFT_1_13
-                && protocolize.protocolVersion() <= 767; // 1.21.1
+        return protocolize.protocolVersion() >= ProtocolVersions.MINECRAFT_1_13;
     }
 }
