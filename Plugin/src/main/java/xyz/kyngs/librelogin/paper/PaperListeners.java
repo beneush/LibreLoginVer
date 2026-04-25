@@ -30,7 +30,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import javax.crypto.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -182,7 +181,10 @@ public class PaperListeners extends AuthenticListeners<PaperLibreLogin, Player, 
         }
 
         var world = chooseServer(puuid, ip, readOnlyUserCache.getIfPresent(puuid));
+
         ipCache.invalidate(puuid);
+
+        // ❗ ALWAYS handle null world first
         if (world.value() == null) {
             Bukkit.getScheduler()
                     .runTask(
@@ -196,24 +198,34 @@ public class PaperListeners extends AuthenticListeners<PaperLibreLogin, Player, 
                                                                             + (world.key()
                                                                                     ? "lobby"
                                                                                     : "limbo"))));
-        } else {
-            Function<World, Boolean> isLimbo =
-                    (w) ->
-                            plugin.getConfiguration()
-                                    .get(ConfigurationKeys.LIMBO)
-                                    .contains(w.getName());
-            Location eventSpawnLocation = event.getSpawnLocation();
-            if (!event.isNewPlayer()
-                    && !isLimbo.apply(eventSpawnLocation.getWorld())
-                    && isLimbo.apply(world.value())) {
-                spawnLocationCache.put(puuid, eventSpawnLocation);
-            } else {
-                return;
-            }
+            return;
+        }
 
-            var loc = world.value().getSpawnLocation();
-            joinedWhileDead.put(puuid, loc);
-            event.setSpawnLocation(loc);
+        World targetWorld = world.value();
+        Location targetSpawn = targetWorld.getSpawnLocation();
+        Location eventSpawnLocation = event.getSpawnLocation();
+        boolean targetIsLimbo =
+                plugin.getConfiguration().get(ConfigurationKeys.LIMBO).contains(targetWorld.getName());
+
+        // Premium/session/floodgate path: keep Paper default spawn logic
+        // (last location for returning player, world spawn for first join).
+        if (world.key() && !targetIsLimbo) {
+            joinedWhileDead.invalidate(puuid);
+            return;
+        }
+
+        // Non-premium path: move to limbo world spawn.
+        event.setSpawnLocation(targetSpawn);
+        joinedWhileDead.put(puuid, targetSpawn);
+
+        // Remember pre-limbo spawn so /login can return the player back.
+        if (!event.isNewPlayer()
+                && eventSpawnLocation.getWorld() != null
+                && !plugin.getConfiguration()
+                        .get(ConfigurationKeys.LIMBO)
+                        .contains(eventSpawnLocation.getWorld().getName())
+                && targetIsLimbo) {
+            spawnLocationCache.put(puuid, eventSpawnLocation);
         }
     }
 
